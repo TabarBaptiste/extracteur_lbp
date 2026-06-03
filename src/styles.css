@@ -1,0 +1,174 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-terracotta-deep: var(--terracotta-deep);
+  --color-terracotta-bright: var(--terracotta-bright);
+  --color-terracotta-pale: var(--terracotta-pale);
+  --color-cream: var(--cream);
+  --color-moss-green: var(--moss-green);
+  --color-warm-beige: var(--warm-beige);
+  --color-gold: var(--gold);
+  --color-stone-grey: var(--stone-grey);
+  --color-debit: var(--debit);
+  --color-debit-bg: var(--debit-bg);
+  --color-credit: var(--credit);
+  --color-credit-bg: var(--credit-bg);
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "Montserrat", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  --terracotta-deep: oklch(0.55 0.13 55);
+  --terracotta-bright: oklch(0.61 0.13 45);
+  --terracotta-pale: oklch(0.91 0.04 55);
+  --cream: oklch(0.97 0.015 80);
+  --moss-green: oklch(0.49 0.07 115);
+  --warm-beige: oklch(0.86 0.05 75);
+  --gold: oklch(0.72 0.09 80);
+  --stone-grey: oklch(0.58 0.012 70);
+
+  --debit: oklch(0.5 0.21 28);
+  --debit-bg: oklch(0.97 0.02 25);
+  --credit: oklch(0.49 0.07 115);
+  --credit-bg: oklch(0.96 0.03 115);
+
+  --background: var(--cream);
+  --foreground: oklch(0.18 0 0);
+  --card: var(--terracotta-pale);
+  --card-foreground: oklch(0.18 0 0);
+  --popover: var(--cream);
+  --popover-foreground: oklch(0.18 0 0);
+  --primary: var(--terracotta-bright);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: var(--warm-beige);
+  --secondary-foreground: oklch(0.18 0 0);
+  --muted: var(--warm-beige);
+  --muted-foreground: var(--stone-grey);
+  --accent: var(--terracotta-pale);
+  --accent-foreground: var(--terracotta-deep);
+  --destructive: oklch(0.55 0.22 28);
+  --destructive-foreground: oklch(1 0 0);
+  --border: var(--warm-beige);
+  --input: var(--warm-beige);
+  --ring: var(--terracotta-deep);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .label-caps {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.125em;
+    font-size: 11px;
+  }
+}
+
+@layer components {
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 12px 32px;
+    border-radius: 999px;
+    background-color: var(--color-terracotta-bright);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.125em;
+    font-size: 11px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-cta:hover:not(:disabled) {
+    background-color: var(--color-terracotta-deep);
+  }
+  .btn-cta:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 12px 32px;
+    border-radius: 999px;
+    background-color: transparent;
+    color: var(--color-terracotta-deep);
+    border: 1.5px solid var(--color-terracotta-deep);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.125em;
+    font-size: 11px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .btn-outline:hover:not(:disabled) {
+    background-color: var(--color-terracotta-deep);
+    color: #fff;
+  }
+
+  .card-tt {
+    background-color: var(--color-terracotta-pale);
+    border: 1px solid var(--color-warm-beige);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  .card-tt-hover:hover {
+    box-shadow: 0 8px 24px oklch(0.55 0.13 55 / 0.12);
+    transform: translateY(-2px);
+  }
+}

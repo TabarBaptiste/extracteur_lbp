@@ -161,7 +161,10 @@ function rightmostAmount(line: string): AmountMatch | null {
 }
 
 function cleanLabel(parts: string[]): string {
-  let text = parts.map((p) => p.trim()).filter(Boolean).join(" ");
+  let text = parts
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .join(" ");
   let cut = text.length;
   for (const mk of NOISE_MARKERS) {
     const i = text.indexOf(mk);
@@ -172,7 +175,7 @@ function cleanLabel(parts: string[]): string {
   text = text.replace(IBAN_RE, "");
   text = text.replace(/DATE DE VALEUR[\d  ]*/g, "");
   // Strip long alphanumeric refs (must contain both letter and digit)
-  text = text.replace(/\b[0-9A-Z/\-]{8,}\b/g, (tok) => {
+  text = text.replace(/\b[0-9A-Z/-]{8,}\b/g, (tok) => {
     const hasDigit = /\d/.test(tok);
     const hasAlpha = /[A-Z]/.test(tok);
     return hasDigit && hasAlpha ? "" : tok;
@@ -193,7 +196,10 @@ function findSplitColumn(pageText: string): number | null {
   return null;
 }
 
-function amountSide(line: string, splitCol: number): { side: "debit" | "credit"; value: number } | null {
+function amountSide(
+  line: string,
+  splitCol: number,
+): { side: "debit" | "credit"; value: number } | null {
   const m = rightmostAmount(line);
   if (!m) return null;
   const value = parseAmount(m.value);

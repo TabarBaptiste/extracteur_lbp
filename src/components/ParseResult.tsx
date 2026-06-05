@@ -1,6 +1,4 @@
-import { RotateCcw } from "lucide-react";
 import type { ParsedStatement } from "@/lib/lbp-parser";
-import { CoherenceAlert } from "./CoherenceAlert";
 import { ExportButtons } from "./ExportButtons";
 import { OperationsTable } from "./OperationsTable";
 import { SavingsSection } from "./SavingsSection";
@@ -10,39 +8,16 @@ function fmt(n: number | null | undefined): string {
   return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
 }
 
-export function ParseResult({
-  data,
-  onReset,
-}: {
-  data: ParsedStatement;
-  onReset: () => void;
-}) {
+/**
+ * Detail view of a single statement (situation, compte courant, livrets).
+ * The enclosing card (StatementCard) renders the header, coherence badge
+ * and remove control; the per-statement export buttons live here at the foot.
+ */
+export function ParseResult({ data, index = 0 }: { data: ParsedStatement; index?: number }) {
   const cc = data.compte_courant;
 
   return (
     <div className="space-y-8">
-      {/* Header bandeau */}
-      <header className="card-tt p-5 sm:p-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="label-caps text-terracotta-deep mb-1">La Banque Postale</p>
-          <h1 className="font-display text-2xl sm:text-3xl text-foreground">
-            Relevé {data.releve.numero ? `n°${data.releve.numero}` : ""}
-          </h1>
-          {data.releve.date_edition && (
-            <p className="text-sm text-stone-grey mt-1">
-              Édité le {data.releve.date_edition}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col items-end gap-3">
-          <CoherenceAlert coherence={data.controle_coherence} />
-          <button className="btn-outline" onClick={onReset}>
-            <RotateCcw className="h-3.5 w-3.5" strokeWidth={2} />
-            Nouveau relevé
-          </button>
-        </div>
-      </header>
-
       {/* Situation des comptes */}
       {data.situation.comptes.length > 0 && (
         <section>
@@ -97,13 +72,13 @@ export function ParseResult({
 
       <SavingsSection livrets={data.comptes_epargne} />
 
-      {/* Exports */}
+      {/* Export de ce relevé uniquement */}
       <section className="card-tt p-5 sm:p-6">
-        <h2 className="text-xl mb-1">Exporter</h2>
+        <h2 className="text-xl mb-1">Exporter ce relevé</h2>
         <p className="text-sm text-stone-grey mb-4">
-          Téléchargez les données extraites dans le format de votre choix.
+          Téléchargez uniquement les données de ce relevé.
         </p>
-        <ExportButtons data={data} />
+        <ExportButtons data={data} index={index} />
       </section>
     </div>
   );

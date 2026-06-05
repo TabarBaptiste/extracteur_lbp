@@ -43,18 +43,24 @@ export function OperationsTable({ operations, ancienSolde }: Props) {
             const bg = isDebit
               ? "bg-[color:var(--color-debit-bg)]"
               : isCredit
-              ? "bg-[color:var(--color-credit-bg)]"
-              : i % 2
-              ? "bg-cream"
-              : "bg-white";
+                ? "bg-[color:var(--color-credit-bg)]"
+                : i % 2
+                  ? "bg-cream"
+                  : "bg-white";
             return (
               <tr key={i} className={`${bg} border-t border-warm-beige`}>
                 <td className="px-3 py-2.5 whitespace-nowrap font-medium">{op.date}</td>
                 <td className="px-3 py-2.5">{op.libelle}</td>
-                <td className="px-3 py-2.5 text-right whitespace-nowrap hidden sm:table-cell" style={{ color: "var(--color-debit)" }}>
+                <td
+                  className="px-3 py-2.5 text-right whitespace-nowrap hidden sm:table-cell"
+                  style={{ color: "var(--color-debit)" }}
+                >
                   {isDebit ? `−${fmt(op.debit)}` : ""}
                 </td>
-                <td className="px-3 py-2.5 text-right whitespace-nowrap hidden sm:table-cell" style={{ color: "var(--color-credit)" }}>
+                <td
+                  className="px-3 py-2.5 text-right whitespace-nowrap hidden sm:table-cell"
+                  style={{ color: "var(--color-credit)" }}
+                >
                   {isCredit ? `+${fmt(op.credit)}` : ""}
                 </td>
                 <td

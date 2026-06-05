@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, AlertTriangle } from "lucide-react";
 import { DropZone } from "@/components/DropZone";
-import { ParseResult } from "@/components/ParseResult";
+import { ResultsView } from "@/components/ResultsView";
 import { useParser } from "@/hooks/use-parser";
 
 export const Route = createFileRoute("/")({
@@ -16,7 +15,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Extracteur de relevés La Banque Postale" },
       {
         property: "og:description",
-        content: "Convertissez vos relevés PDF LBP en JSON, CSV ou XLSX — sans rien envoyer sur Internet.",
+        content:
+          "Convertissez vos relevés PDF LBP en JSON, CSV ou XLSX — sans rien envoyer sur Internet.",
       },
     ],
     links: [
@@ -32,7 +32,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { state, data, error, parse, reset } = useParser();
+  const { files, parseFiles, removeFile, reset } = useParser();
+  const hasFiles = files.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,61 +52,32 @@ function Index() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        {state !== "success" && (
-          <div className="text-center mb-8 sm:mb-12 max-w-2xl mx-auto">
-            <h1 className="font-display text-3xl sm:text-5xl text-foreground mb-3 leading-tight">
-              Vos relevés bancaires, <em className="text-terracotta-deep not-italic">extraits proprement.</em>
-            </h1>
-            <p className="text-stone-grey text-base sm:text-lg">
-              Déposez un relevé PDF de La Banque Postale. Nous en extrayons toutes les opérations
-              et vous les rendons en JSON, CSV ou XLSX — sans jamais quitter votre navigateur.
-            </p>
-          </div>
-        )}
-
-        {state === "idle" && <DropZone onFile={parse} />}
-
-        {state === "loading" && (
-          <div className="card-tt p-8 sm:p-12 flex flex-col items-center text-center">
-            <Loader2 className="h-10 w-10 text-terracotta-deep animate-spin mb-4" strokeWidth={1.5} />
-            <p className="font-display text-xl">Analyse en cours…</p>
-            <p className="text-sm text-stone-grey mt-1">Extraction du texte et parsing des opérations.</p>
-          </div>
-        )}
-
-        {state === "error" && (
-          <div className="space-y-6">
-            <div
-              className="rounded-lg border p-5 flex gap-3"
-              style={{
-                borderColor: "var(--color-terracotta-bright)",
-                backgroundColor: "var(--color-terracotta-pale)",
-              }}
-            >
-              <AlertTriangle
-                className="h-5 w-5 flex-shrink-0 mt-0.5 text-terracotta-deep"
-                strokeWidth={1.75}
-              />
-              <div>
-                <p className="font-semibold text-foreground mb-1">Impossible de lire ce PDF</p>
-                <p className="text-sm text-stone-grey">{error}</p>
-              </div>
+        {!hasFiles && (
+          <>
+            <div className="text-center mb-8 sm:mb-12 max-w-2xl mx-auto">
+              <h1 className="font-display text-3xl sm:text-5xl text-foreground mb-3 leading-tight">
+                Vos relevés bancaires,{" "}
+                <em className="text-terracotta-deep not-italic">extraits proprement.</em>
+              </h1>
+              <p className="text-stone-grey text-base sm:text-lg">
+                Déposez un ou plusieurs relevés PDF de La Banque Postale. Nous en extrayons toutes
+                les opérations et vous les rendons en JSON, CSV ou XLSX — sans jamais quitter votre
+                navigateur.
+              </p>
             </div>
-            <DropZone onFile={parse} />
-            <div className="text-center">
-              <button className="btn-outline" onClick={reset}>
-                Réessayer
-              </button>
-            </div>
-          </div>
+            <DropZone onFiles={parseFiles} />
+          </>
         )}
 
-        {state === "success" && data && <ParseResult data={data} onReset={reset} />}
+        {hasFiles && (
+          <ResultsView files={files} onFiles={parseFiles} onRemove={removeFile} onReset={reset} />
+        )}
       </main>
 
       <footer className="border-t border-warm-beige mt-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 text-center text-xs text-stone-grey">
-          Aucune donnée n'est envoyée, stockée ni transmise. Le parsing s'exécute intégralement dans votre navigateur.
+          Aucune donnée n'est envoyée, stockée ni transmise. Le parsing s'exécute intégralement dans
+          votre navigateur.
         </div>
       </footer>
     </div>

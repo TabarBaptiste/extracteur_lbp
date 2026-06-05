@@ -27,7 +27,7 @@ Cette application résout ce problème en analysant le PDF **directement dans le
 
 ## Fonctionnalités
 
-- **Upload simple** : glissez-déposez un PDF de relevé LBP
+- **Upload multiple** : glissez-déposez un **ou plusieurs** PDF de relevés LBP en une fois (chaque relevé est analysé indépendamment, et vous pouvez en ajouter ou en retirer à tout moment)
 - **Extraction automatique** :
   - Informations du relevé (numéro, date d'édition)
   - Situation des comptes
@@ -35,9 +35,10 @@ Cette application résout ce problème en analysant le PDF **directement dans le
   - Livrets d'épargne (Livret A, Livret Jeune Swing, Livret d'Épargne Populaire)
 - **Contrôle de cohérence** : vérification automatique que les soldes et totaux sont cohérents
 - **Exports** :
-  - **JSON** – structure complète, prête pour une intégration technique
-  - **CSV** – format tableur universel (séparateur `;`)
-  - **XLSX** – fichier Excel avec feuilles "Opérations" et "Résumé", mise en forme et volets figés
+  - **Par relevé** : chaque relevé peut être exporté individuellement en JSON, CSV ou XLSX
+  - **Groupé (1 seul fichier)** : tous les relevés réunis dans un unique fichier JSON (tableau), CSV ou XLSX. Les exports CSV/XLSX groupés ajoutent une colonne `source` / « Relevé » pour garder la traçabilité de l'origine de chaque opération.
+  - **Séparé (1 fichier par relevé)** : un fichier JSON par relevé, généré en une seule action
+  - Formats : **JSON** (structure complète), **CSV** (séparateur `;`), **XLSX** (feuilles "Opérations" et "Résumé", mise en forme et volets figés)
 - **Responsive** : utilisable sur ordinateur comme sur mobile
 
 ---
@@ -67,9 +68,12 @@ Avantages de cette architecture :
 ## Utilisation
 
 1. Ouvrez l'application dans votre navigateur
-2. Glissez-déposez (ou sélectionnez) un **relevé PDF de La Banque Postale**
-3. Les opérations sont extraites et affichées en tableau
-4. Téléchargez le résultat au format souhaité (JSON, CSV ou XLSX)
+2. Glissez-déposez (ou sélectionnez) un **ou plusieurs relevés PDF de La Banque Postale**
+3. Les opérations de chaque relevé sont extraites et affichées dans des cartes dépliables
+4. Téléchargez le résultat :
+   - relevé par relevé, ou
+   - tous les relevés regroupés dans un seul fichier (JSON / CSV / XLSX), ou
+   - un fichier JSON par relevé en une seule action
 
 ---
 

@@ -76,7 +76,10 @@ async function extractPagesText(file: File): Promise<string[]> {
   // Character cell size in PDF points. ~5pt per column reproduces the
   // pdftotext -layout column density well enough for LBP statements.
   const COL = 5.0;
-  const ROW = 3.0;
+  // Baselines of a same visual row can differ by up to ~0.5pt (amounts are
+  // typeset slightly above their label). Consecutive rows are ~9.4pt apart, so
+  // clustering with this tolerance keeps them together without merging rows.
+  const ROW_TOL = 2.0;
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum);
@@ -84,26 +87,29 @@ async function extractPagesText(file: File): Promise<string[]> {
     const viewport = page.getViewport({ scale: 1 });
     const pageHeight = viewport.height;
 
-    // Group items by row
-    const rows = new Map<number, Array<{ x: number; text: string }>>();
+    // Group items into rows by baseline proximity (a fixed grid would split
+    // items sitting on either side of a bucket boundary).
+    const items: Array<{ x: number; y: number; text: string }> = [];
     for (const item of content.items as Array<{
       str: string;
       transform: number[];
       width: number;
     }>) {
       if (!item.str) continue;
-      const x = item.transform[4];
-      const y = pageHeight - item.transform[5];
-      const rowKey = Math.round(y / ROW);
-      const arr = rows.get(rowKey) ?? [];
-      arr.push({ x, text: item.str });
-      rows.set(rowKey, arr);
+      items.push({ x: item.transform[4], y: pageHeight - item.transform[5], text: item.str });
+    }
+    items.sort((a, b) => a.y - b.y);
+
+    const rows: Array<{ y: number; items: typeof items }> = [];
+    for (const it of items) {
+      const row = rows[rows.length - 1];
+      if (row && it.y - row.y <= ROW_TOL) row.items.push(it);
+      else rows.push({ y: it.y, items: [it] });
     }
 
-    const sortedKeys = [...rows.keys()].sort((a, b) => a - b);
     const lines: string[] = [];
-    for (const k of sortedKeys) {
-      const row = rows.get(k)!.sort((a, b) => a.x - b.x);
+    for (const { items: row } of rows) {
+      row.sort((a, b) => a.x - b.x);
       let buf = "";
       for (const { x, text } of row) {
         let col = Math.max(0, Math.round(x / COL));
@@ -130,6 +136,23 @@ const ACCOUNT_NAMES =
 const COMPTE_HEADER_RE = new RegExp(`^\\s*(${ACCOUNT_NAMES})\\s+n[°º]`);
 
 const NOISE_MARKERS = ["REF :", "IDENT :", "MANDAT :", "REFERENCE :", "RUM"];
+
+// Page furniture: legal footer and per-page headers. They sit between two
+// operation blocks and would otherwise be glued onto the preceding label.
+const FURNITURE_RE = [
+  /La Banque Postale\s*-\s*S\.A\. à Directoire/,
+  /RCS Paris n[°º]/,
+  /IDU EMP/,
+  /ORIAS n[°º]/,
+  /Page\s+\d+\/\d+\s*$/,
+  /^\s*Relevé n[°º]\s*\d+\s*\|/,
+  /Vos opérations .*\(suite\)/,
+  /^\s*Date\s+Opérations\b/,
+];
+
+function isFurniture(line: string): boolean {
+  return FURNITURE_RE.some((re) => re.test(line));
+}
 
 function parseAmount(s: string): number {
   s = s.replace(/\u202f/g, " ").replace(/\xa0/g, " ");
@@ -207,11 +230,12 @@ function amountSide(
   return { side, value };
 }
 
-type TaggedLine = [string, number];
+type TaggedLine = [line: string, splitCol: number, page: number];
 
 function parseOperations(tagged: TaggedLine[]): Operation[] {
   const ops: Operation[] = [];
   let current: (Operation & { _frag: string[] }) | null = null;
+  let currentPage = tagged.length ? tagged[0][2] : 0;
 
   const flush = () => {
     if (current) {
@@ -223,7 +247,13 @@ function parseOperations(tagged: TaggedLine[]): Operation[] {
     }
   };
 
-  for (const [line, splitCol] of tagged) {
+  for (const [line, splitCol, page] of tagged) {
+    // An operation never continues across a page break: close it so the page
+    // header cannot be absorbed as a continuation line.
+    if (page !== currentPage) {
+      flush();
+      currentPage = page;
+    }
     if (!line.trim()) continue;
     if (
       line.includes("Total des opérations") ||
@@ -386,7 +416,10 @@ export function parseStatement(pages: string[]): ParsedStatement {
 
   const tagged: TaggedLine[] = [];
   pages.forEach((p, i) => {
-    for (const line of p.split("\n")) tagged.push([line, pageSplits[i]]);
+    for (const line of p.split("\n")) {
+      if (isFurniture(line)) continue;
+      tagged.push([line, pageSplits[i], i]);
+    }
   });
 
   const full = pages.join("\n");

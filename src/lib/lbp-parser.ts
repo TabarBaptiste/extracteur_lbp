@@ -2,11 +2,24 @@
 // Reconstructs a fixed-width text layout from PDF text items, then applies the
 // same regex-driven parsing logic as the Python module.
 
-import * as pdfjsLib from "pdfjs-dist";
-// Vite-friendly worker import
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+// Loaded lazily (see loadPdfjs) so this module stays import-safe under SSR:
+// pdfjs-dist's canvas backend references browser globals (DOMMatrix) at
+// module-init time, which don't exist in the Node SSR runtime.
+let pdfjsLibPromise: Promise<typeof import("pdfjs-dist")> | null = null;
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+async function loadPdfjs() {
+  if (!pdfjsLibPromise) {
+    pdfjsLibPromise = (async () => {
+      const [pdfjsLib, { default: workerSrc }] = await Promise.all([
+        import("pdfjs-dist"),
+        import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+      ]);
+      pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+      return pdfjsLib;
+    })();
+  }
+  return pdfjsLibPromise;
+}
 
 export interface Operation {
   date: string;
@@ -69,6 +82,7 @@ export interface ParsedStatement {
 // -------- PDF -> fixed-width text layout (mimics pdftotext -layout) --------
 
 async function extractPagesText(file: File): Promise<string[]> {
+  const pdfjsLib = await loadPdfjs();
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
   const pages: string[] = [];

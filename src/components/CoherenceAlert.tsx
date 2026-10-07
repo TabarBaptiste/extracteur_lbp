@@ -8,7 +8,7 @@ export function CoherenceAlert({ coherence }: { coherence: Coherence }) {
     <span
       className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full label-caps text-white"
       style={{
-        backgroundColor: ok ? "var(--color-moss-green)" : "var(--color-terracotta-bright)",
+        backgroundColor: ok ? "var(--color-success)" : "var(--color-brand)",
       }}
     >
       {ok ? (

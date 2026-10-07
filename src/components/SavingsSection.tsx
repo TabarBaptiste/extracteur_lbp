@@ -33,18 +33,18 @@ function LivretCard({ livret, defaultOpen }: { livret: Livret; defaultOpen: bool
       >
         <div>
           <h3 className="font-display text-xl text-foreground">{livret.type}</h3>
-          <p className="text-xs text-stone-grey mt-0.5 label-caps">
+          <p className="text-xs text-muted-foreground mt-0.5 label-caps">
             Solde {fmt(livret.nouveau_solde?.montant)} · {livret.operations.length} op.
           </p>
         </div>
         <ChevronDown
-          className={`h-5 w-5 text-terracotta-deep transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-5 w-5 text-brand-deep transition-transform ${open ? "rotate-180" : ""}`}
           strokeWidth={1.5}
         />
       </button>
       {open && (
         <div className="px-5 pb-5 space-y-3">
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-stone-grey">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
             {livret.ancien_solde && (
               <span>
                 Ancien solde ({livret.ancien_solde.date}) :{" "}

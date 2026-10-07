@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap",
       },
     ],
   }),
@@ -37,15 +37,15 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-warm-beige bg-cream/80 backdrop-blur sticky top-0 z-10">
+      <header className="border-b border-border bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-terracotta-bright flex items-center justify-center text-white font-display text-lg">
+            <div className="h-9 w-9 rounded-full bg-ink flex items-center justify-center text-white font-display text-lg">
               L
             </div>
             <div>
-              <p className="font-display text-lg leading-tight">Extracteur LBP</p>
-              <p className="label-caps text-stone-grey leading-tight">PDF → JSON · CSV · XLSX</p>
+              <p className="font-display text-lg font-bold leading-tight">Extracteur LBP</p>
+              <p className="label-caps text-muted-foreground leading-tight">PDF → JSON · CSV · XLSX</p>
             </div>
           </div>
         </div>
@@ -55,15 +55,10 @@ function Index() {
         {!hasFiles && (
           <>
             <div className="text-center mb-8 sm:mb-12 max-w-2xl mx-auto">
-              <h1 className="font-display text-3xl sm:text-5xl text-foreground mb-3 leading-tight">
+              <h1 className="font-display text-4xl sm:text-6xl text-ink mb-4 leading-[1.05] tracking-[-0.035em]">
                 Vos relevés bancaires,{" "}
-                <em className="text-terracotta-deep not-italic">extraits proprement.</em>
+                <em className="text-brand not-italic">extraits proprement.</em>
               </h1>
-              <p className="text-stone-grey text-base sm:text-lg">
-                Déposez un ou plusieurs relevés PDF de La Banque Postale. Nous en extrayons toutes
-                les opérations et vous les rendons en JSON, CSV ou XLSX — sans jamais quitter votre
-                navigateur.
-              </p>
             </div>
             <DropZone onFiles={parseFiles} />
           </>
@@ -74,12 +69,6 @@ function Index() {
         )}
       </main>
 
-      <footer className="border-t border-warm-beige mt-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 text-center text-xs text-stone-grey">
-          Aucune donnée n'est envoyée, stockée ni transmise. Le parsing s'exécute intégralement dans
-          votre navigateur.
-        </div>
-      </footer>
     </div>
   );
 }

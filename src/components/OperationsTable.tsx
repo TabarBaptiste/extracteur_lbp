@@ -20,14 +20,14 @@ export function OperationsTable({ operations, ancienSolde }: Props) {
   });
 
   if (operations.length === 0) {
-    return <p className="text-sm text-stone-grey italic py-4">Aucune opération sur ce compte.</p>;
+    return <p className="text-sm text-muted-foreground italic py-4">Aucune opération sur ce compte.</p>;
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-warm-beige bg-white">
+    <div className="overflow-x-auto rounded-2xl border border-border bg-white">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-terracotta-deep text-white">
+          <tr className="bg-ink text-white">
             <th className="text-left px-3 py-3 label-caps">Date</th>
             <th className="text-left px-3 py-3 label-caps">Libellé</th>
             <th className="text-right px-3 py-3 label-caps hidden sm:table-cell">Débit</th>
@@ -45,10 +45,10 @@ export function OperationsTable({ operations, ancienSolde }: Props) {
               : isCredit
                 ? "bg-[color:var(--color-credit-bg)]"
                 : i % 2
-                  ? "bg-cream"
+                  ? "bg-surface"
                   : "bg-white";
             return (
-              <tr key={i} className={`${bg} border-t border-warm-beige`}>
+              <tr key={i} className={`${bg} border-t border-border`}>
                 <td className="px-3 py-2.5 whitespace-nowrap font-medium">{op.date}</td>
                 <td className="px-3 py-2.5">{op.libelle}</td>
                 <td
@@ -69,7 +69,7 @@ export function OperationsTable({ operations, ancienSolde }: Props) {
                 >
                   {isDebit ? `−${fmt(op.debit)}` : `+${fmt(op.credit)}`}
                 </td>
-                <td className="px-3 py-2.5 text-right whitespace-nowrap text-stone-grey">
+                <td className="px-3 py-2.5 text-right whitespace-nowrap text-muted-foreground">
                   {fmt(solde)}
                 </td>
               </tr>

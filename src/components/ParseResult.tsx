@@ -24,15 +24,15 @@ export function ParseResult({ data, index = 0 }: { data: ParsedStatement; index?
           <h2 className="text-2xl mb-4">
             Situation des comptes{" "}
             {data.situation.date && (
-              <span className="text-sm text-stone-grey font-sans font-normal">
+              <span className="text-sm text-muted-foreground font-sans font-normal">
                 au {data.situation.date}
               </span>
             )}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {data.situation.comptes.map((c, i) => (
-              <div key={i} className="card-tt card-tt-hover p-4">
-                <p className="label-caps text-terracotta-deep mb-2">{c.compte}</p>
+              <div key={i} className="card-tt p-4">
+                <p className="label-caps text-brand-deep mb-2">{c.compte}</p>
                 <p className="font-display text-2xl text-foreground">{fmt(c.solde)}</p>
               </div>
             ))}
@@ -45,7 +45,7 @@ export function ParseResult({ data, index = 0 }: { data: ParsedStatement; index?
         <section>
           <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
             <h2 className="text-2xl">Compte Courant Postal</h2>
-            <p className="text-xs text-stone-grey">
+            <p className="text-xs text-muted-foreground">
               {cc.operations.length} opération{cc.operations.length > 1 ? "s" : ""}
             </p>
           </div>
@@ -75,7 +75,7 @@ export function ParseResult({ data, index = 0 }: { data: ParsedStatement; index?
       {/* Export de ce relevé uniquement */}
       <section className="card-tt p-5 sm:p-6">
         <h2 className="text-xl mb-1">Exporter ce relevé</h2>
-        <p className="text-sm text-stone-grey mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Téléchargez uniquement les données de ce relevé.
         </p>
         <ExportButtons data={data} index={index} />
@@ -97,7 +97,7 @@ function SummaryCard({
 }) {
   return (
     <div className="card-tt p-3 sm:p-4">
-      <p className="label-caps text-stone-grey mb-1.5">{label}</p>
+      <p className="label-caps text-muted-foreground mb-1.5">{label}</p>
       <p
         className={`font-display ${strong ? "text-2xl" : "text-xl"}`}
         style={{ color: color ?? "var(--color-foreground)" }}

@@ -27,19 +27,19 @@ export function StatementCard({
         >
           {success ? (
             <ChevronDown
-              className={`h-5 w-5 flex-shrink-0 text-terracotta-deep transition-transform ${
+              className={`h-5 w-5 flex-shrink-0 text-brand-deep transition-transform ${
                 open ? "rotate-180" : ""
               }`}
               strokeWidth={1.5}
             />
           ) : file.status === "loading" ? (
             <Loader2
-              className="h-5 w-5 flex-shrink-0 text-terracotta-deep animate-spin"
+              className="h-5 w-5 flex-shrink-0 text-brand-deep animate-spin"
               strokeWidth={1.75}
             />
           ) : (
             <AlertTriangle
-              className="h-5 w-5 flex-shrink-0 text-terracotta-deep"
+              className="h-5 w-5 flex-shrink-0 text-brand-deep"
               strokeWidth={1.75}
             />
           )}
@@ -52,7 +52,7 @@ export function StatementCard({
                   ? "Analyse en cours…"
                   : "Échec de l'analyse"}
             </h3>
-            <p className="text-xs text-stone-grey mt-0.5 flex items-center gap-1.5 truncate">
+            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5 truncate">
               <FileText className="h-3 w-3 flex-shrink-0" strokeWidth={1.75} />
               <span className="truncate">{file.fileName}</span>
               {success && file.data?.releve.date_edition && (
@@ -66,7 +66,7 @@ export function StatementCard({
           {success && file.data && <CoherenceAlert coherence={file.data.controle_coherence} />}
           <button
             type="button"
-            className="p-1.5 rounded-md text-stone-grey hover:text-terracotta-deep hover:bg-terracotta-pale transition-colors"
+            className="p-1.5 rounded-md text-muted-foreground hover:text-brand-deep hover:bg-brand-soft transition-colors"
             onClick={onRemove}
             title="Retirer ce relevé"
             aria-label="Retirer ce relevé"
@@ -78,12 +78,12 @@ export function StatementCard({
 
       {file.status === "error" && (
         <div className="px-5 pb-5 -mt-1">
-          <p className="text-sm text-stone-grey">{file.error}</p>
+          <p className="text-sm text-muted-foreground">{file.error}</p>
         </div>
       )}
 
       {success && file.data && open && (
-        <div className="px-5 pb-6 border-t border-warm-beige pt-6">
+        <div className="px-5 pb-6 border-t border-border pt-6">
           <ParseResult data={file.data} index={index} />
         </div>
       )}
